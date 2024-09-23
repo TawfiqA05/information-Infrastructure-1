@@ -1,0 +1,29 @@
+# Open the dataset file and read its contents
+with open('/Users/tawfiqabulail/Downloads/Information Infrastructure I /covid_data_set.csv', 'r') as file:
+    data = file.readlines()
+
+# Initialize a dictionary to store the sum of deaths and hospitalizations, and count of entries for each month
+monthly_data = {}
+
+# Process each line
+for line in data[1:]:  # Skip the header line
+    parts = line.strip().split(',')
+    date = parts[0]
+    deaths = float(parts[19]) if parts[19] else 0  # Assuming deaths are in the 20th column
+    hospitalizations = float(parts[9]) if parts[9] else 0  # Assuming hospitalizations are in the 10th column
+    
+    # Extract the month from the date
+    month = date[:6]  # Assuming the date format is YYYYMMDD
+    
+    if month not in monthly_data:
+        monthly_data[month] = {'deaths_sum': 0, 'hospitalizations_sum': 0, 'count': 0}
+    
+    monthly_data[month]['deaths_sum'] += deaths
+    monthly_data[month]['hospitalizations_sum'] += hospitalizations
+    monthly_data[month]['count'] += 1
+
+# Calculate and print the average deaths and hospitalizations for each month
+for month, data in monthly_data.items():
+    avg_deaths = data['deaths_sum'] / data['count']
+    avg_hospitalizations = data['hospitalizations_sum'] / data['count']
+    print(f"{month}: Average Deaths = {avg_deaths:.2f}, Average Hospitalizations = {avg_hospitalizations:.2f}")
